@@ -30,7 +30,7 @@ Running sneedium in tabbed
 For running sneedium in tabbed[1] there is a script included in the distribution,
 which is run like this:
 
-	sneedium-open.sh [URI]
+	scripts/sneedium-open.sh [URI]
 
 Further invocations of the script will run sneedium with the specified URI in this
 instance of tabbed.

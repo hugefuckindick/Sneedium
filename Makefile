@@ -1,53 +1,49 @@
 # sneedium - simple browser
 # See LICENSE file for copyright and license details.
 .POSIX:
+VERSION = 2.1
 
-include config.mk
+PREFIX = /usr/local
+MANPREFIX = $(PREFIX)/share/man
+LIBPREFIX = $(PREFIX)/lib
+LIBDIR = $(LIBPREFIX)/sneedium
 
-SRC = sneedium.c
-WSRC = webext-sneedium.c
-OBJ = $(SRC:.c=.o)
-WOBJ = $(WSRC:.c=.o)
-WLIB = $(WSRC:.c=.so)
+X11INC = `pkg-config --cflags x11`
+X11LIB = `pkg-config --libs x11`
+GTKINC = `pkg-config --cflags gtk+-3.0 gcr-3 webkit2gtk-4.0`
+GTKLIB = `pkg-config --libs gtk+-3.0 gcr-3 webkit2gtk-4.0`
 
-all: options sneedium $(WLIB)
+INCS = $(X11INC) $(GTKINC) -Iinclude
+LIBS = $(X11LIB) $(GTKLIB) -lgthread-2.0
 
-options:
-	@echo sneedium build options:
-	@echo "CC            = $(CC)"
-	@echo "CFLAGS        = $(SNEEDIUMCFLAGS) $(CFLAGS)"
-	@echo "WEBEXTCFLAGS  = $(WEBEXTCFLAGS) $(CFLAGS)"
-	@echo "LDFLAGS       = $(LDFLAGS)"
+CPPFLAGS = -DVERSION=\"$(VERSION)\" -DGCR_API_SUBJECT_TO_CHANGE \
+           -DLIBPREFIX=\"$(LIBPREFIX)\" -D_DEFAULT_SOURCE
 
-sneedium: $(OBJ)
-	$(CC) $(SNEEDIUMLDFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+build/sneedium: build/sneedium.o
+	$(CC) $(LDFLAGS) -o $@ build/sneedium.o $(LIBS)
 
-$(OBJ) $(WOBJ): config.h common.h config.mk
+build/sneedium.o: build include/config.h
+	$(CC) -fPIC $(INCS) $(CPPFLAGS) $(CFLAGS) \
+          -c src/sneedium.c -o build/sneedium.o
 
-config.h:
-	cp config.def.h $@
+build:
+	mkdir -p build
 
-$(OBJ): $(SRC)
-	$(CC) $(SNEEDIUMCFLAGS) $(CFLAGS) -c $(SRC)
+include/config.h:
+	cp include/config.def.h include/config.h
 
-$(WLIB): $(WOBJ)
-	$(CC) -shared -Wl,-soname,$@ $(LDFLAGS) -o $@ $? $(WEBEXTLIBS)
-
-$(WOBJ): $(WSRC)
-	$(CC) $(WEBEXTCFLAGS) $(CFLAGS) -c $(WSRC)
+.PHONY: all clean  distclean dist install uninstall
+all: build/sneedium
 
 clean:
-	rm -f sneedium $(OBJ)
-	rm -f $(WLIB) $(WOBJ)
+	rm -rf build
 
 distclean: clean
-	rm -f config.h sneedium-$(VERSION).tar.gz
+	rm -f include/config.h sneedium-$(VERSION).tar.gz
 
 dist: distclean
 	mkdir -p sneedium-$(VERSION)
-	cp -R LICENSE Makefile config.mk config.def.h README \
-	    sneedium-open.sh arg.h TODO.md sneedium.png \
-	    sneedium.1 common.h $(SRC) $(WSRC) sneedium-$(VERSION)
+	cp -R * sneedium-$(VERSION)
 	tar -cf sneedium-$(VERSION).tar sneedium-$(VERSION)
 	gzip sneedium-$(VERSION).tar
 	rm -rf sneedium-$(VERSION)
@@ -56,21 +52,11 @@ install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f sneedium $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/sneedium
-	mkdir -p $(DESTDIR)$(LIBDIR)
-	cp -f $(WLIB) $(DESTDIR)$(LIBDIR)
-	for wlib in $(WLIB); do \
-	    chmod 644 $(DESTDIR)$(LIBDIR)/$$wlib; \
-	done
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
-	sed "s/VERSION/$(VERSION)/g" < sneedium.1 > $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	sed "s/VERSION/$(VERSION)/g" < man/sneedium.1 > \
+         $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/sneedium
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
-	for wlib in $(WLIB); do \
-	    rm -f $(DESTDIR)$(LIBDIR)/$$wlib; \
-	done
-	- rmdir $(DESTDIR)$(LIBDIR)
-
-.PHONY: all options distclean clean dist install uninstall

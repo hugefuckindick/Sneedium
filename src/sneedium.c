@@ -180,7 +180,6 @@ static void cleanup(void);
 
 /* GTK/WebKit */
 static WebKitWebView *newview(Client *c, WebKitWebView *rv);
-static void initwebextensions(WebKitWebContext *wc, Client *c);
 static GtkWidget *createview(WebKitWebView *v, WebKitNavigationAction *a,
                              Client *c);
 static gboolean buttonreleased(GtkWidget *w, GdkEvent *e, Client *c);
@@ -1178,8 +1177,6 @@ newview(Client *c, WebKitWebView *rv)
 
 		g_signal_connect(G_OBJECT(context), "download-started",
 		                 G_CALLBACK(downloadstarted), c);
-		g_signal_connect(G_OBJECT(context), "initialize-web-extensions",
-		                 G_CALLBACK(initwebextensions), c);
 
 		v = g_object_new(WEBKIT_TYPE_WEB_VIEW,
 		    "settings", settings,
@@ -1240,20 +1237,6 @@ readsock(GIOChannel *s, GIOCondition ioc, gpointer unused)
 	}
 
 	return TRUE;
-}
-
-void
-initwebextensions(WebKitWebContext *wc, Client *c)
-{
-	GVariant *gv;
-
-	if (spair[1] < 0)
-		return;
-
-	gv = g_variant_new("i", spair[1]);
-
-	webkit_web_context_set_web_extensions_initialization_user_data(wc, gv);
-	webkit_web_context_set_web_extensions_directory(wc, WEBEXTDIR);
 }
 
 GtkWidget *
