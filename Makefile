@@ -1,26 +1,26 @@
-# surf - simple browser
+# sneedium - simple browser
 # See LICENSE file for copyright and license details.
 .POSIX:
 
 include config.mk
 
-SRC = surf.c
-WSRC = webext-surf.c
+SRC = sneedium.c
+WSRC = webext-sneedium.c
 OBJ = $(SRC:.c=.o)
 WOBJ = $(WSRC:.c=.o)
 WLIB = $(WSRC:.c=.so)
 
-all: options surf $(WLIB)
+all: options sneedium $(WLIB)
 
 options:
-	@echo surf build options:
+	@echo sneedium build options:
 	@echo "CC            = $(CC)"
-	@echo "CFLAGS        = $(SURFCFLAGS) $(CFLAGS)"
+	@echo "CFLAGS        = $(SNEEDIUMCFLAGS) $(CFLAGS)"
 	@echo "WEBEXTCFLAGS  = $(WEBEXTCFLAGS) $(CFLAGS)"
 	@echo "LDFLAGS       = $(LDFLAGS)"
 
-surf: $(OBJ)
-	$(CC) $(SURFLDFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+sneedium: $(OBJ)
+	$(CC) $(SNEEDIUMLDFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
 
 $(OBJ) $(WOBJ): config.h common.h config.mk
 
@@ -28,7 +28,7 @@ config.h:
 	cp config.def.h $@
 
 $(OBJ): $(SRC)
-	$(CC) $(SURFCFLAGS) $(CFLAGS) -c $(SRC)
+	$(CC) $(SNEEDIUMCFLAGS) $(CFLAGS) -c $(SRC)
 
 $(WLIB): $(WOBJ)
 	$(CC) -shared -Wl,-soname,$@ $(LDFLAGS) -o $@ $? $(WEBEXTLIBS)
@@ -37,37 +37,37 @@ $(WOBJ): $(WSRC)
 	$(CC) $(WEBEXTCFLAGS) $(CFLAGS) -c $(WSRC)
 
 clean:
-	rm -f surf $(OBJ)
+	rm -f sneedium $(OBJ)
 	rm -f $(WLIB) $(WOBJ)
 
 distclean: clean
-	rm -f config.h surf-$(VERSION).tar.gz
+	rm -f config.h sneedium-$(VERSION).tar.gz
 
 dist: distclean
-	mkdir -p surf-$(VERSION)
+	mkdir -p sneedium-$(VERSION)
 	cp -R LICENSE Makefile config.mk config.def.h README \
-	    surf-open.sh arg.h TODO.md surf.png \
-	    surf.1 common.h $(SRC) $(WSRC) surf-$(VERSION)
-	tar -cf surf-$(VERSION).tar surf-$(VERSION)
-	gzip surf-$(VERSION).tar
-	rm -rf surf-$(VERSION)
+	    sneedium-open.sh arg.h TODO.md sneedium.png \
+	    sneedium.1 common.h $(SRC) $(WSRC) sneedium-$(VERSION)
+	tar -cf sneedium-$(VERSION).tar sneedium-$(VERSION)
+	gzip sneedium-$(VERSION).tar
+	rm -rf sneedium-$(VERSION)
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f surf $(DESTDIR)$(PREFIX)/bin
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/surf
+	cp -f sneedium $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/sneedium
 	mkdir -p $(DESTDIR)$(LIBDIR)
 	cp -f $(WLIB) $(DESTDIR)$(LIBDIR)
 	for wlib in $(WLIB); do \
 	    chmod 644 $(DESTDIR)$(LIBDIR)/$$wlib; \
 	done
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
-	sed "s/VERSION/$(VERSION)/g" < surf.1 > $(DESTDIR)$(MANPREFIX)/man1/surf.1
-	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/surf.1
+	sed "s/VERSION/$(VERSION)/g" < sneedium.1 > $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/surf
-	rm -f $(DESTDIR)$(MANPREFIX)/man1/surf.1
+	rm -f $(DESTDIR)$(PREFIX)/bin/sneedium
+	rm -f $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 	for wlib in $(WLIB); do \
 	    rm -f $(DESTDIR)$(LIBDIR)/$$wlib; \
 	done

@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details.
  *
- * To understand surf, start reading main().
+ * To understand sneedium, start reading main().
  */
 #include <sys/file.h>
 #include <sys/socket.h>
@@ -141,7 +141,7 @@ typedef struct {
 	regex_t re;
 } SiteSpecific;
 
-/* Surf */
+/* Sneedium */
 static void die(const char *errstr, ...);
 static void usage(void);
 static void setup(void);
@@ -315,7 +315,7 @@ die(const char *errstr, ...)
 void
 usage(void)
 {
-	die("usage: surf [-bBdDfFgGiIkKmMnNpPsStTvwxX]\n"
+	die("usage: sneedium [-bBdDfFgGiIkKmMnNpPsStTvwxX]\n"
 	    "[-a cookiepolicies ] [-c cookiefile] [-C stylefile] [-e xid]\n"
 	    "[-r scriptfile] [-u useragent] [-z zoomlevel] [uri]\n");
 }
@@ -336,9 +336,9 @@ setup(void)
 		die("Can't open default display");
 
 	/* atoms */
-	atoms[AtomFind] = XInternAtom(dpy, "_SURF_FIND", False);
-	atoms[AtomGo] = XInternAtom(dpy, "_SURF_GO", False);
-	atoms[AtomUri] = XInternAtom(dpy, "_SURF_URI", False);
+	atoms[AtomFind] = XInternAtom(dpy, "_SNEEDIUM_FIND", False);
+	atoms[AtomGo] = XInternAtom(dpy, "_SNEEDIUM_GO", False);
+	atoms[AtomUri] = XInternAtom(dpy, "_SNEEDIUM_URI", False);
 
 	gtk_init(NULL, NULL);
 
@@ -1127,9 +1127,9 @@ newview(Client *c, WebKitWebView *rv)
 
 		if (strcmp(fulluseragent, "")) {
 			webkit_settings_set_user_agent(settings, fulluseragent);
-		} else if (surfuseragent) {
+		} else if (sneediumuseragent) {
 			webkit_settings_set_user_agent_with_application_details(
-			    settings, "Surf", VERSION);
+			    settings, "Sneedium", VERSION);
 		}
 		useragent = webkit_settings_get_user_agent(settings);
 
@@ -1228,14 +1228,14 @@ readsock(GIOChannel *s, GIOCondition ioc, gpointer unused)
 	if (g_io_channel_read_chars(s, msg, sizeof(msg), &msgsz, &gerr) !=
 	    G_IO_STATUS_NORMAL) {
 		if (gerr) {
-			fprintf(stderr, "surf: error reading socket: %s\n",
+			fprintf(stderr, "sneedium: error reading socket: %s\n",
 			        gerr->message);
 			g_error_free(gerr);
 		}
 		return TRUE;
 	}
 	if (msgsz < 2) {
-		fprintf(stderr, "surf: message too short: %d\n", msgsz);
+		fprintf(stderr, "sneedium: message too short: %d\n", msgsz);
 		return TRUE;
 	}
 
@@ -1426,10 +1426,10 @@ createwindow(Client *c)
 		w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 		wmstr = g_path_get_basename(argv0);
-		gtk_window_set_wmclass(GTK_WINDOW(w), wmstr, "Surf");
+		gtk_window_set_wmclass(GTK_WINDOW(w), wmstr, "Sneedium");
 		g_free(wmstr);
 
-		wmstr = g_strdup_printf("%s[%"PRIu64"]", "Surf", c->pageid);
+		wmstr = g_strdup_printf("%s[%"PRIu64"]", "Sneedium", c->pageid);
 		gtk_window_set_role(GTK_WINDOW(w), wmstr);
 		g_free(wmstr);
 
@@ -1863,12 +1863,12 @@ msgext(Client *c, char type, const Arg *a)
 
 	if ((ret = snprintf(msg, sizeof(msg), "%c%c%c", c->pageid, type, a->i))
 	    >= sizeof(msg)) {
-		fprintf(stderr, "surf: message too long: %d\n", ret);
+		fprintf(stderr, "sneedium: message too long: %d\n", ret);
 		return;
 	}
 
 	if (send(spair[0], msg, ret, 0) != ret)
-		fprintf(stderr, "surf: error sending: %u%c%d (%d)\n",
+		fprintf(stderr, "sneedium: error sending: %u%c%d (%d)\n",
 		        c->pageid, type, a->i, ret);
 }
 
@@ -2094,7 +2094,7 @@ main(int argc, char *argv[])
 		fulluseragent = EARGF(usage());
 		break;
 	case 'v':
-		die("surf-"VERSION", see LICENSE for © details\n");
+		die("sneedium-"VERSION", see LICENSE for © details\n");
 	case 'w':
 		showxid = 1;
 		break;
