@@ -21,7 +21,7 @@ necessary as root):
 Running sneedium
 ------------
 run
-	sneedium [URI]
+    sneedium [URI]
 
 See the manpage for further options.
 
@@ -30,7 +30,7 @@ Running sneedium in tabbed
 For running sneedium in tabbed[1] there is a script included in the distribution,
 which is run like this:
 
-	scripts/sneedium-open.sh [URI]
+    scripts/sneedium-open.sh [URI]
 
 Further invocations of the script will run sneedium with the specified URI in this
 instance of tabbed.
