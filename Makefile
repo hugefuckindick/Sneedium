@@ -21,43 +21,43 @@ CPPFLAGS = -DVERSION=\"$(VERSION)\" -DGCR_API_SUBJECT_TO_CHANGE \
            -DLIBPREFIX=\"$(LIBPREFIX)\" -D_DEFAULT_SOURCE
 
 build/sneedium: build/sneedium.o
-    $(CC) $(LDFLAGS) -o $@ build/sneedium.o $(LIBS)
+	$(CC) $(LDFLAGS) -o $@ build/sneedium.o $(LIBS)
 
 build/sneedium.o: build include/config.h
-    $(CC) -fPIC $(INCS) $(CPPFLAGS) $(CFLAGS) \
+	$(CC) -fPIC $(INCS) $(CPPFLAGS) $(CFLAGS) \
           -c src/sneedium.c -o build/sneedium.o
 
 build:
-    mkdir -p build
+	mkdir -p build
 
 include/config.h:
-    cp include/config.def.h include/config.h
+	cp include/config.def.h include/config.h
 
 .PHONY: all clean  distclean dist install uninstall
 all: build/sneedium
 
 clean:
-    rm -rf build
+	rm -rf build
 
 distclean: clean
-    rm -f include/config.h sneedium-$(VERSION).tar.gz
+	rm -f include/config.h sneedium-$(VERSION).tar.gz
 
 dist: distclean
-    mkdir -p sneedium-$(VERSION)
-    cp -R * sneedium-$(VERSION)
-    tar -cf sneedium-$(VERSION).tar sneedium-$(VERSION)
-    gzip sneedium-$(VERSION).tar
-    rm -rf sneedium-$(VERSION)
+	mkdir -p sneedium-$(VERSION)
+	cp -R * sneedium-$(VERSION)
+	tar -cf sneedium-$(VERSION).tar sneedium-$(VERSION)
+	gzip sneedium-$(VERSION).tar
+	rm -rf sneedium-$(VERSION)
 
 install: all
-    mkdir -p $(DESTDIR)$(PREFIX)/bin
-    cp -f sneedium $(DESTDIR)$(PREFIX)/bin
-    chmod 755 $(DESTDIR)$(PREFIX)/bin/sneedium
-    mkdir -p $(DESTDIR)$(MANPREFIX)/man1
-    sed "s/VERSION/$(VERSION)/g" < man/sneedium.1 > \
-         $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
-    chmod 644 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp -f sneedium $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/sneedium
+	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
+	sed "s/VERSION/$(VERSION)/g" < man/sneedium.1 > \
+		 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 
 uninstall:
-    rm -f $(DESTDIR)$(PREFIX)/bin/sneedium
-    rm -f $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	rm -f $(DESTDIR)$(PREFIX)/bin/sneedium
+	rm -f $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
