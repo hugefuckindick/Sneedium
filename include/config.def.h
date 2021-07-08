@@ -14,45 +14,46 @@ static char *cookiefile     = "~/.sneedium/cookies.txt";
  * Command parameters are priority 2
  */
 static Parameter defconfig[ParameterLast] = {
-	/* parameter                    Arg value       priority */
-	[AccessMicrophone]    =       { { .i = 0 },     },
-	[AccessWebcam]        =       { { .i = 0 },     },
-	[Certificate]         =       { { .i = 0 },     },
-	[CaretBrowsing]       =       { { .i = 0 },     },
-	[CookiePolicies]      =       { { .v = "@Aa" }, },
-	[DefaultCharset]      =       { { .v = "UTF-8" }, },
-	[DiskCache]           =       { { .i = 1 },     },
-	[DNSPrefetch]         =       { { .i = 0 },     },
-	[Ephemeral]           =       { { .i = 0 },     },
-	[FileURLsCrossAccess] =       { { .i = 0 },     },
-	[FontSize]            =       { { .i = 12 },    },
-	[FrameFlattening]     =       { { .i = 0 },     },
-	[Geolocation]         =       { { .i = 0 },     },
-	[HideBackground]      =       { { .i = 0 },     },
-	[Inspector]           =       { { .i = 0 },     },
-	[Java]                =       { { .i = 1 },     },
-	[JavaScript]          =       { { .i = 1 },     },
-	[KioskMode]           =       { { .i = 0 },     },
-	[LoadImages]          =       { { .i = 1 },     },
-	[MediaManualPlay]     =       { { .i = 1 },     },
-	[PreferredLanguages]  =       { { .v = (char *[]){ NULL } }, },
-	[RunInFullscreen]     =       { { .i = 0 },     },
-	[ScrollBars]          =       { { .i = 1 },     },
-	[ShowIndicators]      =       { { .i = 1 },     },
-	[SiteQuirks]          =       { { .i = 1 },     },
-	[SmoothScrolling]     =       { { .i = 0 },     },
-	[SpellChecking]       =       { { .i = 0 },     },
-	[SpellLanguages]      =       { { .v = ((char *[]){ "en_US", NULL }) }, },
-	[StrictTLS]           =       { { .i = 1 },     },
-	[Style]               =       { { .i = 1 },     },
-	[WebGL]               =       { { .i = 0 },     },
-	[ZoomLevel]           =       { { .f = 1.0 },   },
+	/* parameter                    Arg value                       priority */
+	[AccessMicrophone]    =       { { .i = 0 },                             0},
+	[AccessWebcam]        =       { { .i = 0 },                             0},
+	[Certificate]         =       { { .i = 0 },                             0},
+	[CaretBrowsing]       =       { { .i = 0 },                             0},
+	[CookiePolicies]      =       { { .v = "@Aa" },                         0},
+	[DefaultCharset]      =       { { .v = "UTF-8" },                       0},
+	[DiskCache]           =       { { .i = 1 },                             0},
+	[DNSPrefetch]         =       { { .i = 0 },                             0},
+	[Ephemeral]           =       { { .i = 0 },                             0},
+	[FileURLsCrossAccess] =       { { .i = 0 },                             0},
+	[FontSize]            =       { { .i = 12 },                            0},
+	[FrameFlattening]     =       { { .i = 0 },                             0},
+	[Geolocation]         =       { { .i = 0 },                             0},
+	[HideBackground]      =       { { .i = 0 },                             0},
+	[Inspector]           =       { { .i = 0 },                             0},
+	[Java]                =       { { .i = 1 },                             0},
+	[JavaScript]          =       { { .i = 1 },                             0},
+	[KioskMode]           =       { { .i = 0 },                             0},
+	[LoadImages]          =       { { .i = 1 },                             0},
+	[MediaManualPlay]     =       { { .i = 1 },                             0},
+	[PreferredLanguages]  =       { { .v = (char *[]){ NULL } },            0},
+	[RunInFullscreen]     =       { { .i = 0 },                             0},
+	[ScrollBars]          =       { { .i = 1 },                             0},
+	[ShowIndicators]      =       { { .i = 1 },                             0},
+	[SiteQuirks]          =       { { .i = 1 },                             0},
+	[SmoothScrolling]     =       { { .i = 0 },                             0},
+	[SpellChecking]       =       { { .i = 0 },                             0},
+	[SpellLanguages]      =       { { .v = ((char *[]){ "en_US", NULL }) }, 0},
+	[StrictTLS]           =       { { .i = 1 },                             0},
+	[Style]               =       { { .i = 1 },                             0},
+	[WebGL]               =       { { .i = 0 },                             0},
+	[ZoomLevel]           =       { { .f = 1.0 },                           0},
 };
 
-static UriParameters uriparams[] = {
+static UriParameters uriparams[] =
+{
 	{ "(://|\\.)suckless\\.org(/|$)", {
 	  [JavaScript] = { { .i = 0 }, 1 },
-	}, },
+	}, {0}},
 };
 
 /* default window size: width, height */
@@ -107,7 +108,7 @@ static WebKitFindOptions findopts = WEBKIT_FIND_OPTIONS_CASE_INSENSITIVE |
  */
 static SiteSpecific styles[] = {
 	/* regexp               file in $styledir */
-	{ ".*",                 "default.css" },
+	{ ".*",                 "default.css", {0}},
 };
 
 /* certificates */
@@ -116,7 +117,7 @@ static SiteSpecific styles[] = {
  */
 static SiteSpecific certs[] = {
 	/* regexp               file in $certdir */
-	{ "://suckless\\.org/", "suckless.org.crt" },
+	{ "://suckless\\.org/", "suckless.org.crt", {0}},
 };
 
 #define MODKEY GDK_CONTROL_MASK
