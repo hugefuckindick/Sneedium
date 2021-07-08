@@ -1,76 +1,62 @@
-# surf - simple browser
+# sneedium - simple browser
 # See LICENSE file for copyright and license details.
 .POSIX:
+VERSION = 2.1
 
-include config.mk
+PREFIX = /usr/local
+MANPREFIX = $(PREFIX)/share/man
+LIBPREFIX = $(PREFIX)/lib
+LIBDIR = $(LIBPREFIX)/sneedium
 
-SRC = surf.c
-WSRC = webext-surf.c
-OBJ = $(SRC:.c=.o)
-WOBJ = $(WSRC:.c=.o)
-WLIB = $(WSRC:.c=.so)
+X11INC = `pkg-config --cflags x11`
+X11LIB = `pkg-config --libs x11`
+GTKINC = `pkg-config --cflags gtk+-3.0 gcr-3 webkit2gtk-4.0`
+GTKLIB = `pkg-config --libs gtk+-3.0 gcr-3 webkit2gtk-4.0`
 
-all: options surf $(WLIB)
+INCS = $(X11INC) $(GTKINC) -Iinclude
+LIBS = $(X11LIB) $(GTKLIB) -lgthread-2.0
 
-options:
-	@echo surf build options:
-	@echo "CC            = $(CC)"
-	@echo "CFLAGS        = $(SURFCFLAGS) $(CFLAGS)"
-	@echo "WEBEXTCFLAGS  = $(WEBEXTCFLAGS) $(CFLAGS)"
-	@echo "LDFLAGS       = $(LDFLAGS)"
+CPPFLAGS = -DVERSION=\"$(VERSION)\" -DGCR_API_SUBJECT_TO_CHANGE \
+           -DLIBPREFIX=\"$(LIBPREFIX)\" -D_DEFAULT_SOURCE
 
-surf: $(OBJ)
-	$(CC) $(SURFLDFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+build/sneedium: build/sneedium.o
+	$(CC) $(LDFLAGS) -o $@ build/sneedium.o $(LIBS)
 
-$(OBJ) $(WOBJ): config.h common.h config.mk
+build/sneedium.o: build include/config.h
+	$(CC) -fPIC $(INCS) $(CPPFLAGS) $(CFLAGS) \
+          -c src/sneedium.c -o build/sneedium.o
 
-config.h:
-	cp config.def.h $@
+build:
+	mkdir -p build
 
-$(OBJ): $(SRC)
-	$(CC) $(SURFCFLAGS) $(CFLAGS) -c $(SRC)
+include/config.h:
+	cp include/config.def.h include/config.h
 
-$(WLIB): $(WOBJ)
-	$(CC) -shared -Wl,-soname,$@ $(LDFLAGS) -o $@ $? $(WEBEXTLIBS)
-
-$(WOBJ): $(WSRC)
-	$(CC) $(WEBEXTCFLAGS) $(CFLAGS) -c $(WSRC)
+.PHONY: all clean  distclean dist install uninstall
+all: build/sneedium
 
 clean:
-	rm -f surf $(OBJ)
-	rm -f $(WLIB) $(WOBJ)
+	rm -rf build
 
 distclean: clean
-	rm -f config.h surf-$(VERSION).tar.gz
+	rm -f include/config.h sneedium-$(VERSION).tar.gz
 
 dist: distclean
-	mkdir -p surf-$(VERSION)
-	cp -R LICENSE Makefile config.mk config.def.h README \
-	    surf-open.sh arg.h TODO.md surf.png \
-	    surf.1 common.h $(SRC) $(WSRC) surf-$(VERSION)
-	tar -cf surf-$(VERSION).tar surf-$(VERSION)
-	gzip surf-$(VERSION).tar
-	rm -rf surf-$(VERSION)
+	mkdir -p sneedium-$(VERSION)
+	cp -R * sneedium-$(VERSION)
+	tar -cf sneedium-$(VERSION).tar sneedium-$(VERSION)
+	gzip sneedium-$(VERSION).tar
+	rm -rf sneedium-$(VERSION)
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f surf $(DESTDIR)$(PREFIX)/bin
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/surf
-	mkdir -p $(DESTDIR)$(LIBDIR)
-	cp -f $(WLIB) $(DESTDIR)$(LIBDIR)
-	for wlib in $(WLIB); do \
-	    chmod 644 $(DESTDIR)$(LIBDIR)/$$wlib; \
-	done
+	cp -f sneedium $(DESTDIR)$(PREFIX)/bin
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/sneedium
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
-	sed "s/VERSION/$(VERSION)/g" < surf.1 > $(DESTDIR)$(MANPREFIX)/man1/surf.1
-	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/surf.1
+	sed "s/VERSION/$(VERSION)/g" < man/sneedium.1 > \
+         $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
+	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/sneedium.1
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/surf
-	rm -f $(DESTDIR)$(MANPREFIX)/man1/surf.1
-	for wlib in $(WLIB); do \
-	    rm -f $(DESTDIR)$(LIBDIR)/$$wlib; \
-	done
-	- rmdir $(DESTDIR)$(LIBDIR)
-
-.PHONY: all options distclean clean dist install uninstall
+	rm -f $(DESTDIR)$(PREFIX)/bin/sneedium
+	rm -f $(DESTDIR)$(MANPREFIX)/man1/sneedium.1

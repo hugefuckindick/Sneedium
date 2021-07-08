@@ -1,8 +1,8 @@
-.TH SURF 1 surf\-VERSION
+.TH SNEEDIUM 1 sneedium\-VERSION
 .SH NAME
-surf \- simple webkit-based browser
+sneedium \- simple webkit-based browser
 .SH SYNOPSIS
-.B surf
+.B sneedium
 .RB [-bBdDfFgGiIkKmMnNpPsStTvwxX]
 .RB [-a\ cookiepolicies]
 .RB [-c\ cookiefile]
@@ -13,10 +13,10 @@ surf \- simple webkit-based browser
 .RB [-z\ zoomlevel]
 .RB [URI]
 .SH DESCRIPTION
-surf is a simple Web browser based on WebKit/GTK+. It is able
+sneedium is a simple Web browser based on WebKit/GTK+. It is able
 to display websites and follow links. It supports the XEmbed protocol
 which makes it possible to embed it in another application. Furthermore,
-one can point surf to another URI by setting its XProperties.
+one can point sneedium to another URI by setting its XProperties.
 .SH OPTIONS
 .TP
 .B \-a cookiepolicies
@@ -26,7 +26,7 @@ The default is "@Aa" but could be
 redefined in the
 .IR config.h ,
 with "A" meaning to
-accept all cookies, "a" to deny all cookies and "@", which tells surf to
+accept all cookies, "a" to deny all cookies and "@", which tells sneedium to
 accept no third party cookies.
 .TP
 .B \-b
@@ -56,10 +56,10 @@ Reparents to window specified by
 .IR xid .
 .TP
 .B \-f
-Start surf in windowed mode (not fullscreen).
+Start sneedium in windowed mode (not fullscreen).
 .TP
 .B \-F
-Start surf in fullscreen mode.
+Start sneedium in fullscreen mode.
 .TP
 .B \-g
 Disable giving the geolocation to websites.
@@ -110,7 +110,7 @@ Enable strict TLS check.
 .B \-u useragent
 Specify the
 .I useragent
-which surf should use.
+which sneedium should use.
 .TP
 .B \-v
 Prints version information to standard output, then exits.
@@ -129,7 +129,7 @@ Enable custom certificates.
 .B \-z zoomlevel
 Specify the
 .I zoomlevel
-which surf should use.
+which sneedium should use.
 .SH USAGE
 .B Escape
 Stops loading current page or stops download.
@@ -228,7 +228,7 @@ Toggle strict TLS check. This will reload the page.
 .B F11
 Toggle fullscreen mode.
 .SH INDICATORS OF OPERATION
-Surf is showing indicators of operation in front of the site title.
+Sneedium is showing indicators of operation in front of the site title.
 For all indicators, unless otherwise specified, a lower case letter means disabled and an upper case letter means enabled.
 .TP
 .B A
@@ -286,15 +286,15 @@ no proxy
 .B P
 using proxy
 .SH ENVIRONMENT
-.B SURF_USERAGENT
-If this variable is set upon startup, surf will use it as the
+.B SNEEDIUM_USERAGENT
+If this variable is set upon startup, sneedium will use it as the
 .I useragent
 string.
 .TP
 .B http_proxy
-If this variable is set and not empty upon startup, surf will use it as the http proxy.
+If this variable is set and not empty upon startup, sneedium will use it as the http proxy.
 .SH SIGNALS
-Surf will reload the current page on
+Sneedium will reload the current page on
 .BR SIGHUP .
 .SH SEE ALSO
 .BR dmenu(1),
