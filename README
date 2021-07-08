@@ -1,6 +1,8 @@
-sneedium - simple webkit-based browser
+Sneedium - Sneed's web browser
 ==================================
-sneedium is a simple Web browser based on WebKit/GTK+.
+Sneedium is a web browser based on WebKit/GTK+. It's forked from
+surf and relicensed as GPLv3, the previous MIT license can be seen
+on notices/SURF_LICENSE.
 
 Requirements
 ------------
