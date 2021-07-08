@@ -16,6 +16,7 @@ GTKLIB = `pkg-config --libs gtk+-3.0 gcr-3 webkit2gtk-4.0`
 INCS = $(X11INC) $(GTKINC) -Iinclude
 LIBS = $(X11LIB) $(GTKLIB) -lgthread-2.0
 
+CFLAGS = -Wall -Wextra -O2
 CPPFLAGS = -DVERSION=\"$(VERSION)\" -DGCR_API_SUBJECT_TO_CHANGE \
            -DLIBPREFIX=\"$(LIBPREFIX)\" -D_DEFAULT_SOURCE
 
